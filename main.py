@@ -1,6 +1,10 @@
-import webbrowser
+import re as re
 
 import pandas as pd
+
+import webbrowser
+
+import subprocess
 
 DEFRouter = ''
 
@@ -75,11 +79,7 @@ def update_ip(filtered_data):
         current_ips.append(ip_address)
 
 
-        # arp_output = subprocess.check_output(['arp', '-a', ip_address])
-        # arp_output = arp_output.decode('utf-8')
-        # mac_address = re.search(r'([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})', arp_output)
 
-        # print(f"IP: {ip_address} | MAC: {mac_address.group(0)}")
 
     # Save the updated Mercury sheet with the new data
     mercury.to_excel(
@@ -91,13 +91,19 @@ def webbrowseropen():
     for x in current_ips:
         webbrowser.open_new_tab('http://' + x)
 
-
+def getmac():
+    for x in current_ips:
+        arp_output = subprocess.check_output(['arp', '-a', x])
+        arp_output = arp_output.decode('utf-8')
+        mac_address = re.search(r'([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})', arp_output)
+        print(f"IP: {x} | MAC: {mac_address.group(0)}")
 def main():
     room_numbers = [133.0, 225.0]  # Add your desired room numbers here
     filtered_data = filter_data(room_numbers)
     update_avf(filtered_data)
     update_ip(filtered_data)
     #webbrowseropen()
+    getmac()
 
 
 if __name__ == '__main__':
