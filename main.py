@@ -1,3 +1,5 @@
+import webbrowser
+
 import pandas as pd
 
 DEFRouter = ''
@@ -7,6 +9,8 @@ DOMAinname = ''
 IPMask = ''
 
 ADDDns = ''
+
+current_ips = []
 
 
 def filter_data(room_numbers):
@@ -68,7 +72,8 @@ def update_ip(filtered_data):
         mercury.iloc[i, mercury.columns.get_loc('IPMask')] = IPMask
         mercury.iloc[i, mercury.columns.get_loc('ADDDns')] = ADDDns
 
-        # webbrowser.open_new_tab('http://' + ip_address)
+        current_ips.append(ip_address)
+
 
         # arp_output = subprocess.check_output(['arp', '-a', ip_address])
         # arp_output = arp_output.decode('utf-8')
@@ -82,12 +87,19 @@ def update_ip(filtered_data):
         sheet_name='IPCONFIG', index=False)
 
 
+def webbrowseropen():
+    for x in current_ips:
+        webbrowser.open_new_tab('http://' + x)
+
+
 def main():
     room_numbers = [133.0, 225.0]  # Add your desired room numbers here
     filtered_data = filter_data(room_numbers)
     update_avf(filtered_data)
     update_ip(filtered_data)
+    #webbrowseropen()
 
 
 if __name__ == '__main__':
     main()
+
