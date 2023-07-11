@@ -1,9 +1,9 @@
 import pandas as pd
 
-rooms = [231.0, 235.0, 112.0, 208.0]
+rooms = [133.0, 225.0]
 
 data = pd.read_excel('Cranberry.xlsx')
-mercury = pd.read_excel('Mercury.xlsx', sheet_name='AVF')
+mercury = pd.read_excel(r"C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\Mercury.xlsx", sheet_name='AVF')
 
 # Filter data from Cranberry sheet based on criteria
 filtered_data = data[data['Model'] == 'Mercury CCS-UC-1-X']
@@ -35,4 +35,4 @@ for i, row in filtered_data.iterrows():
     mercury.iloc[i, mercury.columns.get_loc('BluetoothFriendlyName')] = bluetooth_friendly_name
 
 # Save the updated Mercury sheet with the new data
-mercury.to_excel('UpdatedMercury.xlsx', index=False)
+mercury.to_excel(r"C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\Mercury.xlsx", sheet_name='AVF', index=False)

@@ -6,10 +6,10 @@ import webbrowser
 
 import subprocess
 
-rooms = [231.0, 235.0, 112.0, 208.0]
+rooms = [133.0, 225.0]
 
 data = pd.read_excel('Cranberry.xlsx')
-mercury = pd.read_excel('Mercury.xlsx', sheet_name='IPCONFIG')
+mercury = pd.read_excel(r"C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\MercuryIP.xlsx", sheet_name='IPCONFIG')
 
 # Filter data from Cranberry sheet based on criteria
 filtered_data = data[data['Model'] == 'Mercury CCS-UC-1-X']
@@ -34,13 +34,12 @@ for i, row in filtered_data.iterrows():
 
     #webbrowser.open_new_tab('http://' + ip_address)
 
-    arp_output = subprocess.check_output(['arp', '-a', ip_address])
-    arp_output = arp_output.decode('utf-8')
-    mac_address = re.search(r'([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})', arp_output)
-    #mac_address = arp_output.split()[3]
+    #arp_output = subprocess.check_output(['arp', '-a', ip_address])
+    #arp_output = arp_output.decode('utf-8')
+    #mac_address = re.search(r'([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})', arp_output)
 
-    print(f"IP: {ip_address} | MAC: {mac_address.group(0)}")
+    #print(f"IP: {ip_address} | MAC: {mac_address.group(0)}")
 
 # Save the updated Mercury sheet with the new data
-#mercury.to_excel('IPUpdatedMercury.xlsx', sheet_name='IPCONFIG', index=False)
+mercury.to_excel(r"C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\MercuryIP.xlsx", sheet_name='IPCONFIG', index=False)
 
