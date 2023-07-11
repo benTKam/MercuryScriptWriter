@@ -14,7 +14,6 @@ IPMask = ''
 
 ADDDns = ''
 
-current_ips = []
 
 
 def filter_data(room_numbers):
@@ -26,6 +25,14 @@ def filter_data(room_numbers):
     # Reset the index of the filtered_data DataFrame
     filtered_data = filtered_data.reset_index(drop=True)
     return filtered_data
+
+
+def getdeviceips(filtered_data):
+    ipList = []
+    for i, row in filtered_data.iterrows():
+        ip_address = row['IP Address']
+        ipList.append(ip_address)
+    return ipList
 
 
 def update_avf(filtered_data):
@@ -76,36 +83,35 @@ def update_ip(filtered_data):
         mercury.iloc[i, mercury.columns.get_loc('IPMask')] = IPMask
         mercury.iloc[i, mercury.columns.get_loc('ADDDns')] = ADDDns
 
-        current_ips.append(ip_address)
-
-
-
-
     # Save the updated Mercury sheet with the new data
     mercury.to_excel(
         r"C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\MercuryIP.xlsx",
         sheet_name='IPCONFIG', index=False)
 
 
-def webbrowseropen():
+def webbrowseropen(current_ips):
     for x in current_ips:
         webbrowser.open_new_tab('http://' + x)
 
-def getmac():
+
+def getmac(current_ips):
     for x in current_ips:
         arp_output = subprocess.check_output(['arp', '-a', x])
         arp_output = arp_output.decode('utf-8')
         mac_address = re.search(r'([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})', arp_output)
         print(f"IP: {x} | MAC: {mac_address.group(0)}")
+
+
 def main():
+    current_ips = []
     room_numbers = [133.0, 225.0]  # Add your desired room numbers here
     filtered_data = filter_data(room_numbers)
-    update_avf(filtered_data)
-    update_ip(filtered_data)
-    #webbrowseropen()
-    getmac()
+    #update_avf(filtered_data)
+    #update_ip(filtered_data)
+    current_ips = getdeviceips(filtered_data)
+    # webbrowseropen(current_ips)
+    getmac(current_ips)
 
 
 if __name__ == '__main__':
     main()
-
