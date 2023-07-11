@@ -19,7 +19,7 @@ for i, row in filtered_data.iterrows():
     hostname = row['Hostname']
     general_room_name = str(room_type) + ' ' + str(room_number)
     fusion_room_name = str(hostname)
-    outlook_resource_address = 'PA17_Room' + str(room_number) + '@ccaeducate.me'
+    outlook_resource_address = 'PA17_Room' + str(room_number) + '@INSERTDOMAIN.com'
     bluetooth_friendly_name = ''
 
     # Determine the Bluetooth friendly name based on room type
