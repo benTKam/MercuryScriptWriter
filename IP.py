@@ -1,5 +1,7 @@
 import pandas as pd
 
+import webbrowser
+
 
 rooms = [231.0, 235.0, 112.0, 208.0]
 
@@ -27,5 +29,8 @@ for i, row in filtered_data.iterrows():
     mercury.iloc[i, mercury.columns.get_loc('IPMask')] = IPMask
     mercury.iloc[i, mercury.columns.get_loc('ADDDns')] = ADDDns
 
+    webbrowser.open_new_tab('http://' + ip_address)
+
 # Save the updated Mercury sheet with the new data
 mercury.to_excel('IPUpdatedMercury.xlsx', sheet_name='IPCONFIG', index=False)
+
