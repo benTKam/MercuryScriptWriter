@@ -1,7 +1,10 @@
+import re as re
+
 import pandas as pd
 
 import webbrowser
 
+import subprocess
 
 rooms = [231.0, 235.0, 112.0, 208.0]
 
@@ -29,8 +32,15 @@ for i, row in filtered_data.iterrows():
     mercury.iloc[i, mercury.columns.get_loc('IPMask')] = IPMask
     mercury.iloc[i, mercury.columns.get_loc('ADDDns')] = ADDDns
 
-    webbrowser.open_new_tab('http://' + ip_address)
+    #webbrowser.open_new_tab('http://' + ip_address)
+
+    arp_output = subprocess.check_output(['arp', '-a', ip_address])
+    arp_output = arp_output.decode('utf-8')
+    mac_address = re.search(r'([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})', arp_output)
+    #mac_address = arp_output.split()[3]
+
+    print(f"IP: {ip_address} | MAC: {mac_address.group(0)}")
 
 # Save the updated Mercury sheet with the new data
-mercury.to_excel('IPUpdatedMercury.xlsx', sheet_name='IPCONFIG', index=False)
+#mercury.to_excel('IPUpdatedMercury.xlsx', sheet_name='IPCONFIG', index=False)
 
