@@ -1,10 +1,18 @@
 import re as re
+from datetime import time
 
 import pandas as pd
 
+import time
 import webbrowser
 
 import subprocess
+
+import webbrowser
+
+from selenium import webdriver
+
+from selenium.webdriver.common.keys import Keys
 
 import openpyxl
 
@@ -15,6 +23,7 @@ DOMAinname = ''
 IPMask = ''
 
 ADDDns = ''
+
 
 
 def filter_data(room_numbers):
@@ -89,10 +98,24 @@ def update_ip(filtered_data):
         r"C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\MercuryIP.xlsx",
         sheet_name='IPCONFIG', index=False)
 
-
 def webbrowseropen(current_ips):
     for x in current_ips:
-        webbrowser.open_new_tab('http://' + x)
+        # Open the webpage in a new tab
+        webdriver_path = '/path/to/chromedriver'
+
+        driver = webdriver.Chrome('/path/to/chromedriver')
+
+        driver.get('http://' + x)
+
+        time.sleep(5)
+        # Find the username and password input fields and enter your credentials
+        username_field = driver.find_element('cred_userid_inputtext')
+        username_field.send_keys('Username')
+
+        password_field = driver.find_element('cred_password_inputtext')
+        password_field.send_keys('Passowrd')
+        # Submit the login form
+        password_field.send_keys(Keys.RETURN)
 
 
 def getmac(current_ips, filtered_data):
@@ -146,10 +169,10 @@ def main():
     # update_avf(filtered_data)
     #update_ip(filtered_data)
     current_ips = getdeviceips(filtered_data)
-    # webbrowseropen(current_ips)
+    webbrowseropen(current_ips)
     # getmac(current_ips, filtered_data)
     # run_avf(avf_script_path)
-    run_ip(ip_script_path)
+    #run_ip(ip_script_path)
 
 
 if __name__ == '__main__':
