@@ -8,8 +8,6 @@ import webbrowser
 
 import subprocess
 
-import webbrowser
-
 from selenium import webdriver
 
 from selenium.webdriver.common.keys import Keys
@@ -53,7 +51,7 @@ def update_avf(filtered_data):
         r"C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\Mercury.xlsx",
         sheet_name='AVF')
     for i, row in filtered_data.iterrows():
-        room_number = str(row['Room Number'])  # Convert room number to integer
+        room_number = str(row['Room Number'])
         room_type = row['Room Type']
         hostname = row['Hostname']
         general_room_name = str(room_type) + ' ' + str(room_number)
