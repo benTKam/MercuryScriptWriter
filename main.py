@@ -29,9 +29,9 @@ IPMask = ''
 
 ADDDns = ''
 
-Username = 'AVT'
+Username = ''
 
-Password = 'Support@266'
+Password = ''
 
 
 def filter_data(room_numbers):
