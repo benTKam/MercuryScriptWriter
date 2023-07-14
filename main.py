@@ -24,6 +24,9 @@ IPMask = ''
 
 ADDDns = ''
 
+Username = ''
+
+Password = ''
 
 
 def filter_data(room_numbers):
@@ -110,10 +113,10 @@ def webbrowseropen(current_ips):
         time.sleep(5)
         # Find the username and password input fields and enter your credentials
         username_field = driver.find_element('cred_userid_inputtext')
-        username_field.send_keys('Username')
+        username_field.send_keys(Username)
 
         password_field = driver.find_element('cred_password_inputtext')
-        password_field.send_keys('Passowrd')
+        password_field.send_keys(Password)
         # Submit the login form
         password_field.send_keys(Keys.RETURN)
 
@@ -169,7 +172,7 @@ def main():
     # update_avf(filtered_data)
     #update_ip(filtered_data)
     current_ips = getdeviceips(filtered_data)
-    webbrowseropen(current_ips)
+    #webbrowseropen(current_ips)
     # getmac(current_ips, filtered_data)
     # run_avf(avf_script_path)
     #run_ip(ip_script_path)
