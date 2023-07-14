@@ -6,6 +6,8 @@ import webbrowser
 
 import subprocess
 
+import openpyxl
+
 DEFRouter = ''
 
 DOMAinname = ''
@@ -15,9 +17,8 @@ IPMask = ''
 ADDDns = ''
 
 
-
 def filter_data(room_numbers):
-    data = pd.read_excel('Erie.xlsx')
+    data = pd.read_excel('CCA - Erie - IP Addresses.xlsx')
     # Filter data from Cranberry sheet based on criteria
     filtered_data = data[data['Model'] == 'Mercury CCS-UC-1-X']
     filtered_data = filtered_data[filtered_data['Room Number'].isin(room_numbers)]
@@ -95,7 +96,7 @@ def webbrowseropen(current_ips):
 
 
 def getmac(current_ips, filtered_data):
-    data = pd.read_excel('Erie.xlsx')
+    data = pd.read_excel('CCA - Erie - IP Addresses.xlsx')
     for x in current_ips:
         arp_output = subprocess.check_output(['arp', '-a', x])
         arp_output = arp_output.decode('utf-8')
@@ -103,9 +104,8 @@ def getmac(current_ips, filtered_data):
         for i, row in data.iterrows():
             if data.iloc[i, data.columns.get_loc('IP Address')] == x:
                 data.iloc[i, data.columns.get_loc('MAC Address')] = mac_address.group(0)
-        data.to_excel('Erie.xlsx')
+        data.to_excel('ErieSheet.xlsx')
         print(f"IP: {x} | MAC: {mac_address.group(0)}")
-
 
 
 def run_ip(script_path):
@@ -120,6 +120,8 @@ def run_ip(script_path):
 
     # Run the PowerShell command as a subprocess with administrative privileges
     subprocess.run(powershell_cmd, shell=True)
+
+
 def run_avf(script_path):
     # Build the PowerShell command
     powershell_cmd = [
@@ -139,16 +141,16 @@ def main():
     avf_script_path = r'C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\SetupAVF.ps1'
     ip_script_path = r'C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\SetupIPConfig.ps1'
 
-
     room_numbers = ['L07', 107.0, 106.0, 208.0, 'L06']  # Add your desired room numbers here
     filtered_data = filter_data(room_numbers)
-    #update_avf(filtered_data)
+    # update_avf(filtered_data)
     #update_ip(filtered_data)
     current_ips = getdeviceips(filtered_data)
-    #webbrowseropen(current_ips)
-    getmac(current_ips, filtered_data)
-    #run_avf(avf_script_path)
-    #run_ip(ip_script_path)
+    # webbrowseropen(current_ips)
+    # getmac(current_ips, filtered_data)
+    # run_avf(avf_script_path)
+    run_ip(ip_script_path)
+
 
 if __name__ == '__main__':
     main()
