@@ -29,9 +29,9 @@ IPMask = ''
 
 ADDDns = ''
 
-Username = ''
+Username = 'AVT'
 
-Password = ''
+Password = 'Support@266'
 
 
 def filter_data(room_numbers):
@@ -126,15 +126,15 @@ def webbrowseropen(current_ips):
         link.click()
         time.sleep(1)
         # Find the username and password input fields and enter your credentials
-        username_field = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'cred_userid_inputtext')))
+        username_field = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, 'cred_userid_inputtext')))
         username_field.send_keys(Username)
         time.sleep(1)
-        password_field = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'cred_password_inputtext')))
+        password_field = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, 'cred_password_inputtext')))
         password_field.send_keys(Password)
         # Submit the login form
         time.sleep(1)
         password_field.send_keys(Keys.RETURN)
-        time.sleep(5)
+        time.sleep(3)
 
         driver.execute_script("window.open('');")
 
