@@ -112,7 +112,7 @@ def webbrowseropen(current_ips):
     driver = webdriver.Chrome(options=options)
     i = 1
     for x in current_ips:
-        # Open the webpage in a new tab
+
         webdriver_path = '/path/to/chromedriver'
         driver.get('http://' + x)
 
@@ -139,7 +139,7 @@ def webbrowseropen(current_ips):
         driver.execute_script("window.open('');")
 
         driver.switch_to.window(driver.window_handles[i])
-        # Switch to the new tab
+
         i = i + 1
         time.sleep(1)
 
