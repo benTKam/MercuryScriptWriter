@@ -6,11 +6,18 @@ import pandas as pd
 import time
 import webbrowser
 
+from selenium.webdriver.support.ui import WebDriverWait
+
+from selenium.webdriver.support import expected_conditions as EC
+
 import subprocess
 
 from selenium import webdriver
 
+from selenium.webdriver.common.by import By
+
 from selenium.webdriver.common.keys import Keys
+
 
 import openpyxl
 
@@ -56,7 +63,7 @@ def update_avf(filtered_data):
         hostname = row['Hostname']
         general_room_name = str(room_type) + ' ' + str(room_number)
         fusion_room_name = str(hostname)
-        outlook_resource_address = 'PA16_Room_' + str(room_number) + '@' + DOMAinname
+        outlook_resource_address = 'PA16_Room' + str(room_number) + '@' + DOMAinname
         bluetooth_friendly_name = ''
 
         # Determine the Bluetooth friendly name based on room type
@@ -100,23 +107,41 @@ def update_ip(filtered_data):
         sheet_name='IPCONFIG', index=False)
 
 def webbrowseropen(current_ips):
+    options = webdriver.ChromeOptions()
+    options.add_experimental_option('detach', True)
+    driver = webdriver.Chrome(options=options)
+    i = 1
     for x in current_ips:
         # Open the webpage in a new tab
         webdriver_path = '/path/to/chromedriver'
-
-        driver = webdriver.Chrome('/path/to/chromedriver')
-
         driver.get('http://' + x)
 
-        time.sleep(5)
-        # Find the username and password input fields and enter your credentials
-        username_field = driver.find_element('cred_userid_inputtext')
-        username_field.send_keys(Username)
+        # setting = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "device_admin")))
+        # setting.click()
 
-        password_field = driver.find_element('cred_password_inputtext')
+        advanced = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'details-button')))
+        advanced.click()
+
+        link = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'proceed-link')))
+        link.click()
+        time.sleep(1)
+        # Find the username and password input fields and enter your credentials
+        username_field = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'cred_userid_inputtext')))
+        username_field.send_keys(Username)
+        time.sleep(1)
+        password_field = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'cred_password_inputtext')))
         password_field.send_keys(Password)
         # Submit the login form
+        time.sleep(1)
         password_field.send_keys(Keys.RETURN)
+        time.sleep(5)
+
+        driver.execute_script("window.open('');")
+
+        driver.switch_to.window(driver.window_handles[i])
+        # Switch to the new tab
+        i = i + 1
+        time.sleep(1)
 
 
 def getmac(current_ips, filtered_data):
@@ -165,14 +190,14 @@ def main():
     avf_script_path = r'C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\SetupAVF.ps1'
     ip_script_path = r'C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\SetupIPConfig.ps1'
 
-    room_numbers = ['L07', 107.0, 106.0, 208.0, 'L06']  # Add your desired room numbers here
+    room_numbers = [201.0, 207.0, 108.0, 206.0]  # Add your desired room numbers here
     filtered_data = filter_data(room_numbers)
-    # update_avf(filtered_data)
+    #update_avf(filtered_data)
     #update_ip(filtered_data)
     current_ips = getdeviceips(filtered_data)
-    #webbrowseropen(current_ips)
+    webbrowseropen(current_ips)
     # getmac(current_ips, filtered_data)
-    # run_avf(avf_script_path)
+    #run_avf(avf_script_path)
     #run_ip(ip_script_path)
 
 
