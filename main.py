@@ -4,7 +4,6 @@ from datetime import time
 import pandas as pd
 
 import time
-import webbrowser
 
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -18,8 +17,6 @@ from selenium.webdriver.common.by import By
 
 from selenium.webdriver.common.keys import Keys
 
-
-import openpyxl
 
 DEFRouter = ''
 
