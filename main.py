@@ -94,24 +94,61 @@ def webbrowseropen(current_ips):
         webbrowser.open_new_tab('http://' + x)
 
 
-def getmac(current_ips):
+def getmac(current_ips, filtered_data):
+    data = pd.read_excel('Erie.xlsx')
     for x in current_ips:
         arp_output = subprocess.check_output(['arp', '-a', x])
         arp_output = arp_output.decode('utf-8')
         mac_address = re.search(r'([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})', arp_output)
+        for i, row in data.iterrows():
+            if data.iloc[i, data.columns.get_loc('IP Address')] == x:
+                data.iloc[i, data.columns.get_loc('MAC Address')] = mac_address.group(0)
+        data.to_excel('Erie.xlsx')
         print(f"IP: {x} | MAC: {mac_address.group(0)}")
+
+
+
+def run_ip(script_path):
+    # Build the PowerShell command
+    powershell_cmd = [
+        'powershell.exe',
+        '-ExecutionPolicy',
+        'Bypass',
+        '-Command',
+        f'Start-Process -Verb RunAs powershell -ArgumentList "-ExecutionPolicy Bypass -File {script_path}"'
+    ]
+
+    # Run the PowerShell command as a subprocess with administrative privileges
+    subprocess.run(powershell_cmd, shell=True)
+def run_avf(script_path):
+    # Build the PowerShell command
+    powershell_cmd = [
+        'powershell.exe',
+        '-ExecutionPolicy',
+        'Bypass',
+        '-Command',
+        f'Start-Process -Verb RunAs powershell -ArgumentList "-ExecutionPolicy Bypass -File {script_path}"'
+    ]
+
+    # Run the PowerShell command as a subprocess with administrative privileges
+    subprocess.run(powershell_cmd, shell=True)
 
 
 def main():
     current_ips = []
+    avf_script_path = r'C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\SetupAVF.ps1'
+    ip_script_path = r'C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\SetupIPConfig.ps1'
+
+
     room_numbers = ['L07', 107.0, 106.0, 208.0, 'L06']  # Add your desired room numbers here
     filtered_data = filter_data(room_numbers)
-   #update_avf(filtered_data)
+    #update_avf(filtered_data)
     #update_ip(filtered_data)
     current_ips = getdeviceips(filtered_data)
-    webbrowseropen(current_ips)
-    #getmac(current_ips)
-
+    #webbrowseropen(current_ips)
+    getmac(current_ips, filtered_data)
+    #run_avf(avf_script_path)
+    #run_ip(ip_script_path)
 
 if __name__ == '__main__':
     main()
