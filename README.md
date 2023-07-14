@@ -1,9 +1,9 @@
-Mercury Script Writer
+# Mercury Script Writer
 
 Automate Crestron Mercury Configuration
 
 
-Description
+## Description
 
 I wrote this program to automate some of the work when setting up multiple Crestron Mercury devices. 
 The program takes data from a spreadhsheet we get from a client with configuration information and puts it into the excel sheets
