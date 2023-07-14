@@ -17,7 +17,7 @@ ADDDns = ''
 
 
 def filter_data(room_numbers):
-    data = pd.read_excel('Cranberry.xlsx')
+    data = pd.read_excel('Erie.xlsx')
     # Filter data from Cranberry sheet based on criteria
     filtered_data = data[data['Model'] == 'Mercury CCS-UC-1-X']
     filtered_data = filtered_data[filtered_data['Room Number'].isin(room_numbers)]
@@ -40,12 +40,12 @@ def update_avf(filtered_data):
         r"C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\Mercury.xlsx",
         sheet_name='AVF')
     for i, row in filtered_data.iterrows():
-        room_number = int(row['Room Number'])  # Convert room number to integer
+        room_number = str(row['Room Number'])  # Convert room number to integer
         room_type = row['Room Type']
         hostname = row['Hostname']
         general_room_name = str(room_type) + ' ' + str(room_number)
         fusion_room_name = str(hostname)
-        outlook_resource_address = 'PA17_Room' + str(room_number) + '@' + DOMAinname
+        outlook_resource_address = 'PA16_Room_' + str(room_number) + '@' + DOMAinname
         bluetooth_friendly_name = ''
 
         # Determine the Bluetooth friendly name based on room type
@@ -71,7 +71,7 @@ def update_ip(filtered_data):
         r"C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\MercuryIP.xlsx",
         sheet_name='IPCONFIG')
     for i, row in filtered_data.iterrows():
-        room_number = int(row['Room Number'])  # Convert room number to integer
+        room_number = str(row['Room Number'])  # Convert room number to integer
         hostname = row['Hostname']
         ip_address = row['IP Address']
 
@@ -104,13 +104,13 @@ def getmac(current_ips):
 
 def main():
     current_ips = []
-    room_numbers = [133.0, 225.0]  # Add your desired room numbers here
+    room_numbers = ['L07', 107.0, 106.0, 208.0, 'L06']  # Add your desired room numbers here
     filtered_data = filter_data(room_numbers)
-    #update_avf(filtered_data)
+   #update_avf(filtered_data)
     #update_ip(filtered_data)
     current_ips = getdeviceips(filtered_data)
-    # webbrowseropen(current_ips)
-    getmac(current_ips)
+    webbrowseropen(current_ips)
+    #getmac(current_ips)
 
 
 if __name__ == '__main__':
