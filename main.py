@@ -17,7 +17,6 @@ from selenium.webdriver.common.by import By
 
 from selenium.webdriver.common.keys import Keys
 
-
 DEFRouter = ''
 
 DOMAinname = ''
@@ -50,7 +49,7 @@ def getdeviceips(filtered_data):
     return ipList
 
 
-def update_avf(filtered_data):
+def update_avf(filtered_data, initial_ips):
     mercury = pd.read_excel(
         r"C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\Mercury.xlsx",
         sheet_name='AVF')
@@ -70,6 +69,7 @@ def update_avf(filtered_data):
             bluetooth_friendly_name = 'Live-' + str(room_number)
 
         # Update the specific columns in the Mercury sheet for the corresponding rows
+        mercury.iloc[i, mercury.columns.get_loc('IPAddress')] = initial_ips[i]
         mercury.iloc[i, mercury.columns.get_loc('GeneralRoomName')] = general_room_name
         mercury.iloc[i, mercury.columns.get_loc('FusionRoomName')] = fusion_room_name
         mercury.iloc[i, mercury.columns.get_loc('OutlookResourceAddress')] = outlook_resource_address
@@ -81,7 +81,7 @@ def update_avf(filtered_data):
         sheet_name='AVF', index=False)
 
 
-def update_ip(filtered_data):
+def update_ip(filtered_data, initial_ips):
     mercury = pd.read_excel(
         r"C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\MercuryIP.xlsx",
         sheet_name='IPCONFIG')
@@ -91,6 +91,8 @@ def update_ip(filtered_data):
         ip_address = row['IP Address']
 
         # Update the specific columns in the IPCONFIG sheet for the corresponding rows
+        mercury.iloc[i, mercury.columns.get_loc('IPADDRESS')] = initial_ips[i]
+
         mercury.iloc[i, mercury.columns.get_loc('HOSTname')] = hostname
         mercury.iloc[i, mercury.columns.get_loc('IPAddr')] = ip_address
         mercury.iloc[i, mercury.columns.get_loc('DEFRouter')] = DEFRouter
@@ -103,13 +105,13 @@ def update_ip(filtered_data):
         r"C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\MercuryIP.xlsx",
         sheet_name='IPCONFIG', index=False)
 
+
 def webbrowseropen(current_ips):
     options = webdriver.ChromeOptions()
     options.add_experimental_option('detach', True)
     driver = webdriver.Chrome(options=options)
     i = 1
     for x in current_ips:
-
         webdriver_path = '/path/to/chromedriver'
         driver.get('http://' + x)
 
@@ -123,14 +125,59 @@ def webbrowseropen(current_ips):
         link.click()
         time.sleep(1)
         # Find the username and password input fields and enter your credentials
-        username_field = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, 'cred_userid_inputtext')))
+        username_field = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located((By.ID, 'cred_userid_inputtext')))
         username_field.send_keys(Username)
         time.sleep(1)
-        password_field = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, 'cred_password_inputtext')))
+        password_field = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located((By.ID, 'cred_password_inputtext')))
         password_field.send_keys(Password)
         # Submit the login form
         time.sleep(1)
         password_field.send_keys(Keys.RETURN)
+        time.sleep(3)
+
+        driver.execute_script("window.open('');")
+
+        driver.switch_to.window(driver.window_handles[i])
+
+        i = i + 1
+        time.sleep(1)
+
+
+def initialsetup(initial_ips):
+    options = webdriver.ChromeOptions()
+    options.add_experimental_option('detach', True)
+    driver = webdriver.Chrome(options=options)
+    i = 1
+    for x in initial_ips:
+        webdriver_path = '/path/to/chromedriver'
+        driver.get('http://' + x)
+
+        # setting = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "device_admin")))
+        # setting.click()
+
+        advanced = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'details-button')))
+        advanced.click()
+
+        link = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, 'proceed-link')))
+        link.click()
+        time.sleep(1)
+        # Find the username and password input fields and enter your credentials
+        username_field = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located((By.ID, 'cred_userid_inputtext')))
+        username_field.send_keys(Username)
+        time.sleep(1)
+        password_field = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located((By.ID, 'cred_password_inputtext')))
+        confirm_field = WebDriverWait(driver, 3).until(
+            EC.presence_of_element_located((By.ID, 'cred_confirmpassword_inputtext')))
+        password_field.send_keys(Password)
+        confirm_field.send_keys(Password)
+
+        # Submit the login form
+        time.sleep(1)
+        confirm_field.send_keys(Keys.RETURN)
         time.sleep(3)
 
         driver.execute_script("window.open('');")
@@ -184,18 +231,20 @@ def run_avf(script_path):
 
 def main():
     current_ips = []
+    initial_ips = ['10.61.1.19']
     avf_script_path = r'C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\SetupAVF.ps1'
     ip_script_path = r'C:\Users\bkamide\Downloads\Mercury_EnterpriseConfigUtility_v1.3\Mercury_EnterpriseConfigUtility_v1.3\SetupIPConfig.ps1'
 
-    room_numbers = [201.0, 207.0, 108.0, 206.0]  # Add your desired room numbers here
+    room_numbers = [102.0]  # Add your desired room numbers here
     filtered_data = filter_data(room_numbers)
-    #update_avf(filtered_data)
-    #update_ip(filtered_data)
+    #initialsetup(initial_ips)
+    #update_avf(filtered_data, initial_ips)
+    #update_ip(filtered_data, initial_ips)
     current_ips = getdeviceips(filtered_data)
-    webbrowseropen(current_ips)
+    # webbrowseropen(current_ips)
     # getmac(current_ips, filtered_data)
-    #run_avf(avf_script_path)
-    #run_ip(ip_script_path)
+    run_avf(avf_script_path)
+    # run_ip(ip_script_path)
 
 
 if __name__ == '__main__':
