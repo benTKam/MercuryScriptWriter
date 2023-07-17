@@ -243,8 +243,8 @@ def main():
     current_ips = getdeviceips(filtered_data)
     # webbrowseropen(current_ips)
     # getmac(current_ips, filtered_data)
-    run_avf(avf_script_path)
-    # run_ip(ip_script_path)
+    #run_avf(avf_script_path)
+    run_ip(ip_script_path)
 
 
 if __name__ == '__main__':
